@@ -14,6 +14,11 @@ input: move and output: new board after that move
 possible functions:
 print_board(board)
 compress(row) to move nonzero numbers left trick is to fully implement left and define other directions by rotating/reversing the board
+steps:
+1. remove zeros
+2. merge equal neighbors once
+3. remove gaps again
+4. pad with zeros on the right 
 merge(row) to merge equal numbers
 move_left(board)
 move_right(board)
