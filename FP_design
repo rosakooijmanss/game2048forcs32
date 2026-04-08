@@ -1,0 +1,76 @@
+def make_board():
+    """Creates and returns an empty 4x4 board filled with zeros."""
+    board = []
+    for row in range(4):
+        board.append([0, 0, 0, 0])
+    return board
+
+def print_board(board):
+    """Prints the board in a readable grid format."""
+    for row in board:
+        print(row)
+
+# Sample input / test
+board = make_board()
+print_board(board)
+
+import random
+
+def get_empty_cells(board):
+    """Returns a list of (row, col) tuples for all empty (0) cells."""
+    empty = []
+    for row in range(len(board)):
+        for col in range(len(board[row])):
+            if board[row][col] == 0:
+                empty.append((row, col))
+    return empty
+
+def place_tile(board):
+    """Places a 2 (or rarely 4) on a random empty cell. Modifies board in place."""
+    empty = get_empty_cells(board)
+    if empty:
+        row, col = random.choice(empty)
+        board[row][col] = 2 if random.random() < 0.9 else 4
+
+# Sample test
+board = make_board()
+place_tile(board)
+place_tile(board)
+print_board(board)
+
+def slide_row_left(row):
+    """
+    Slides all nonzero tiles in a row to the left,
+    then merges adjacent equal tiles.
+    Returns the new row.
+    
+    Example: [0, 2, 2, 4] -> [4, 4, 0, 0]
+    """
+    # Step 1: Remove zeros (compact the row)
+    tiles = []
+    for val in row:
+        if val != 0:
+            tiles.append(val)
+    
+    # Step 2: Merge adjacent equal tiles
+    merged = []
+    i = 0
+    while i < len(tiles):
+        if i + 1 < len(tiles) and tiles[i] == tiles[i + 1]:
+            merged.append(tiles[i] * 2)   # merge
+            i += 2                         # skip both
+        else:
+            merged.append(tiles[i])
+            i += 1
+    
+    # Step 3: Pad with zeros to restore length 4
+    while len(merged) < 4:
+        merged.append(0)
+    
+    return merged
+
+# Sample inputs to test
+print(slide_row_left([0, 2, 2, 4]))   # expect [4, 4, 0, 0]
+print(slide_row_left([2, 2, 2, 2]))   # expect [4, 4, 0, 0]
+print(slide_row_left([0, 0, 0, 2]))   # expect [2, 0, 0, 0]
+print(slide_row_left([4, 0, 4, 4]))   # expect [8, 4, 0, 0]
