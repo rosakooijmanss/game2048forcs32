@@ -1,7 +1,7 @@
 # game2048forcs32
 Game 2048 by Emily Bronckers, Bronte Brough and Rosa Kooijmans
 
-#Possible plan made by chatgpt
+
 write 4x4 board like a list of lists:
 board = [
     [2, 0, 2, 4],
