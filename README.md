@@ -1,7 +1,7 @@
 # game2048forcs32
 Game 2048 by Emily Bronckers, Bronte Brough and Rosa Kooijmans
 
-#Possible plan
+#Possible plan made by chatgpt
 write 4x4 board like a list of lists:
 board = [
     [2, 0, 2, 4],
@@ -18,7 +18,7 @@ steps:
 1. remove zeros
 2. merge equal neighbors once
 3. remove gaps again
-4. pad with zeros on the right 
+4. pad with zeros on the right
 merge(row) to merge equal numbers
 move_left(board)
 move_right(board)
@@ -27,4 +27,9 @@ move_down(board)
 add_new_tile(board): place a 2 or 4 in a random empty square
 game_over(board): no more valid moves
 won(board): tile 2048 exists
+
+For first video:
+initial board representation
+implemented print_board
+
 
