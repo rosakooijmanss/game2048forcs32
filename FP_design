@@ -68,6 +68,7 @@ def slide_row_left(row):
         merged.append(0)
     
     return merged
+#check if I can edit
 
 # Sample inputs to test
 print(slide_row_left([0, 2, 2, 4]))   # expect [4, 4, 0, 0]
