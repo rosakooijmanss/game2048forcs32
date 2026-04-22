@@ -1,27 +1,23 @@
 import random
 
-# ---------------------------------------------------------------------------
 # Board setup
-# ---------------------------------------------------------------------------
-
 def make_board():
-    """Creates and returns an empty 4x4 board filled with zeros."""
+    #Create the board 4x4
     board = []
     for row in range(4):
+        #return a board filled with zeros so it appears empty
         board.append([0, 0, 0, 0])
     return board
 
 def print_board(board):
-    """Prints the board in a readable grid format."""
+    #Prints the board in a readable grid format for us to see 
     for row in board:
         print(row)
 
-# ---------------------------------------------------------------------------
-# Tile placement
-# ---------------------------------------------------------------------------
 
+# Tile placement
 def get_empty_cells(board):
-    """Returns a list of (row, col) tuples for all empty (0) cells."""
+    #Returns a list of (row, col) tuples for all of the 'empty' cells
     empty = []
     for row in range(len(board)):
         for col in range(len(board[row])):
@@ -36,9 +32,8 @@ def place_tile(board):
         row, col = random.choice(empty)
         board[row][col] = 2 if random.random() < 0.9 else 4
 
-# ---------------------------------------------------------------------------
+
 # Core sliding logic
-# ---------------------------------------------------------------------------
 
 def slide_row_left(row):
     """
@@ -67,7 +62,7 @@ def slide_row_left(row):
 
     return merged
 
-# ---------------------------------------------------------------------------
+
 # Sliding in all four directions
 #
 # Strategy: rather than writing four separate merge routines, we transform the
@@ -76,7 +71,7 @@ def slide_row_left(row):
 #   Right  -> reverse each row, slide left, reverse back
 #   Up     -> transpose the board, slide left, transpose back
 #   Down   -> transpose, reverse each row, slide left, reverse back, transpose back
-# ---------------------------------------------------------------------------
+
 
 def reverse_rows(board):
     """Returns a new board where every row is reversed (left <-> right flip)."""
