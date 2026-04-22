@@ -21,41 +21,8 @@ The next step in implementing what happens when one of the arrows is pressed, is
 
 After we created all of the functions we wanted to create, we wanted to make sure they worked before implementing them in the right order. This could save a lot of time debugging when implementing the functions, as that would be very hard when the problem would lie in the function itself. Therefore, we asked AI to provide tests to check our functions. We fully copied these tests in our fp status and it helped us to debug our functions and eventually prove they worked. These we could then also show off in the status update.  
 
-At first, we did not realise that there is a possibility that you did not lose, even when the board is full. We implemented only that condition. However, when there are two tiles with the same number next to eachother, you can still do a move without losing. We realised this when we used the tests. Then we asked ClaudeAI to help us come up with that second condition. 
+At first, we did not realise that there is a possibility that you did not lose, even when the board is full. We implemented only that condition. However, when there are two tiles with the same number next to eachother, you can still do a move without losing. We realised this when we used the tests. Then we asked ClaudeAI to help us implement that second condition, which is checking whether every cell had a mergeable neighbor. AI helped to find out we had to loop through all the tiles and only check for a mergeable neighbor to the right or below it. 
 
 
-
-
-
-
-write 4x4 board like a list of lists:
-board = [
-    [2, 0, 2, 4],
-    [0, 4, 4, 0],
-    [2, 2, 0, 0],
-    [0, 0, 0, 2]
-    ]
-write what happens when player does a move (either left, right, up or down)
-input: move and output: new board after that move
-possible functions:
-print_board(board)
-compress(row) to move nonzero numbers left trick is to fully implement left and define other directions by rotating/reversing the board
-steps:
-1. remove zeros
-2. merge equal neighbors once
-3. remove gaps again
-4. pad with zeros on the right
-merge(row) to merge equal numbers
-move_left(board)
-move_right(board)
-move_up(board)
-move_down(board)
-add_new_tile(board): place a 2 or 4 in a random empty square
-game_over(board): no more valid moves
-won(board): tile 2048 exists
-
-For first video:
-initial board representation
-implemented print_board
 
 
