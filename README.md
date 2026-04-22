@@ -2,11 +2,13 @@
 Game 2048 by Emily Bronckers, Bronte Brough and Rosa Kooijmans
 
 Description
-Our final project computes the famous game 2048. Whenever the tile 2048 is created, the game is won. However, when there are no white spaces left on the board, the game is lost. The player has the ability to move tiles left, right, up, or down. Whenever  
+Our final project computes the famous game 2048. You win the game whenever the tile 2048 is created. However, when there are no white spaces left on the board, you lost the game. The player has the ability to move tiles left, right, up, or down. Whenever two tiles with the same numbers are merged, the added result is put in only one tile. With every move, the game randomly adds either a 2 or 4 in any of the white spaces. As the game continues, the board therefore becomes fuller with higher numbers, while it takes more tiles to create the next number. That makes it hard to get higher up to 2048 without having a full board in the meantime.
 
 Instructions to run it
+The player has 4 options every time: arrow left, right, up, or down. It will keep putting in any of these inputs untill the game is either lost or won. 
 
 Special set up steps
+
 
 Internet and aI 
 In detail, which pieces
