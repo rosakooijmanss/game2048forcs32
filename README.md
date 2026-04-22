@@ -12,6 +12,10 @@ Special set up steps
 
 Internet and aI 
 In detail, which pieces
+The idea to flip the board 
+
+return [list(row) for row in zip(*board)] 
+The zip 
 
 Add to your README.md a description of what your project does and instructions for running your code. If this requires any special set-up steps (e.g., using a local IDE, uploading certain files, installing packages, obtaining a personal API key, etc.), be sure to explain those steps.
 Cite any external contributors (so far) in your README.md. If pieces of your code came from the Internet, such as from a tutorial, give credit with a link to that source. If you used generative AI tools, please describe in detail how you used those tools, and which code pieces, if any, it wrote for you.
