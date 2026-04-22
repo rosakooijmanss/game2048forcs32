@@ -17,7 +17,7 @@ def print_board(board):
 
 # Tile placement
 def get_empty_cells(board):
-    #Returns a list of (row, col) tuples for all of the 'empty' cells
+    #Returns a list of rows and column tuples for all of the 'empty' (zero numbered) cells
     empty = []
     for row in range(len(board)):
         for col in range(len(board[row])):
@@ -26,95 +26,81 @@ def get_empty_cells(board):
     return empty
 
 def place_tile(board):
-    """Places a 2 (or rarely 4) on a random empty cell. Modifies board in place."""
+    #places a 2 or sometimes a 4 into a random empty cell randomly to get more tile numbers to appear
     empty = get_empty_cells(board)
     if empty:
         row, col = random.choice(empty)
         board[row][col] = 2 if random.random() < 0.9 else 4
 
 
-# Core sliding logic
+# the main sliding logic
 
 def slide_row_left(row):
-    """
-    Slides all nonzero tiles in a row to the left, then merges adjacent equal tiles.
-    Returns the new row (length 4).
-
-    Example: [0, 2, 2, 4] -> [4, 4, 0, 0]
-    """
-    # Step 1: Remove zeros (compact the row)
+    #slide all nonzero tiles in the row to the left and then combine all of the equal tiles which are adjacent to eachother
+    #then returns the new row values, an example is: [0, 2, 2, 4] -> [4, 4, 0, 0]
+    
+    # step 1: remove the zeros to make just tiles with a value next to eachother
     tiles = [val for val in row if val != 0]
 
-    # Step 2: Merge adjacent equal tiles
+    # step 2: merge the adjacent cells which are equal to eachother 
     merged = []
     i = 0
     while i < len(tiles):
         if i + 1 < len(tiles) and tiles[i] == tiles[i + 1]:
-            merged.append(tiles[i] * 2)   # merge the pair
+            merged.append(tiles[i] * 2)   # merge the tiles
             i += 2                         # skip both tiles
         else:
             merged.append(tiles[i])
             i += 1
 
-    # Step 3: Pad with zeros on the right to restore length 4
+    # step 3:refill the zeros on the right hand side after the slide to the left to remake the line of the board equal to 4 
     while len(merged) < 4:
         merged.append(0)
 
     return merged
 
 
-# Sliding in all four directions
-#
-# Strategy: rather than writing four separate merge routines, we transform the
-# board so that every move becomes a "slide left", then transform it back.
-#
-#   Right  -> reverse each row, slide left, reverse back
-#   Up     -> transpose the board, slide left, transpose back
-#   Down   -> transpose, reverse each row, slide left, reverse back, transpose back
+# Code to slide in all four directions
+    # rather than writing four separate merges with different code, we changed the board directionsso that every move becomes a "slide left" then we change it back
+        #Right: flip each row, slide left, reverse back
+        #up:transpose the board, slide left, transpose back
+        #down: transpose, reverse each row, slide left, reverse back, transpose back
 
 
 def reverse_rows(board):
-    """Returns a new board where every row is reversed (left <-> right flip)."""
+    #this code returns the board where every row is reversed so the left and right sides are flipped 
     return [row[::-1] for row in board]
 
 def transpose(board):
-    """
-    Returns the transpose of the board (rows become columns and vice versa).
-    Used to reuse slide_row_left for up/down moves.
-    """
+    # this code returns the board as transposed so that the rows become columns and the columns have become rows 
     return [list(row) for row in zip(*board)]
 
 def slide_left(board):
-    """Slides all tiles on the board to the left. Returns a new board."""
+    #this code slides all the tiles on the board to the left and returns the new board
     return [slide_row_left(row) for row in board]
 
 def slide_right(board):
-    """Slides all tiles to the right. Returns a new board."""
+    #slides all of the tiles to the right and then returns a new board
     reversed_board = reverse_rows(board)
     slid = slide_left(reversed_board)
     return reverse_rows(slid)
 
 def slide_up(board):
-    """Slides all tiles upward. Returns a new board."""
+    #slides all the tiles up and then returns the new board
     transposed = transpose(board)
     slid = slide_left(transposed)
     return transpose(slid)
 
 def slide_down(board):
-    """Slides all tiles downward. Returns a new board."""
+    #slides all of the tiles down snd returns the new board
     transposed = transpose(board)
     slid = slide_right(transposed)   # slide right on transposed = slide down
     return transpose(slid)
 
-# ---------------------------------------------------------------------------
-# Game state checks
-# ---------------------------------------------------------------------------
 
+# Check the state of the game (e.g. game wins, game over)
 def check_win(board):
-    """
-    Returns True if any cell on the board contains 2048.
-    The player wins as soon as this tile appears.
-    """
+    #will return True if any of the cells on the board contains 2048 and the player wins
     for row in board:
         for cell in row:
             if cell == 2048:
