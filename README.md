@@ -10,12 +10,14 @@ Instructions to run it
 The player has 4 options every time: arrow left, right, up, or down. It will keep putting in any of these inputs untill the game is either lost or won. 
 
 
-Internet and aI 
+Internet and AI
 
-We could come up with the idea to implement what would happen whenever the player would press the left arrow. A slide to the left would happen and with the help of our other functions, that would merge all of the same tiles and create a new board. However,  
+We could come up with the idea to implement what would happen whenever the player would press the left arrow. A slide to the left would happen and with the help of our other functions, that would merge all of the same tiles and create a new board. However, it would become very long if we had to write this for all of the other three moves. We thought there would be a possibility of doing this smarter, so we asked ClaudeAI. It came up with the idea to still use the left slide option, but turn the board on every move. This would need a lot less code, so we used this idea. 
 
-return [list(row) for row in zip(*board)] 
-The zip 
+In step 1 of main sliding logic, we changed changed it in Claude AI from a for loop to a list to make our script shorter.
+
+The next step in implementing what happens when one of the arrows is pressed, is turning the board. We knew how to shift it from left to right, using .... However, we did not know how to transpose the board, so we asked the internet how to transpose a 2D list. It gave us the idea to unpack the operator, zip the board, and then pair it. Below is the provided code.
+[list(row) for row in zip(*board)] 
 
 The game over part 2
 
