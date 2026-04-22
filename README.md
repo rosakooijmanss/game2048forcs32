@@ -1,25 +1,26 @@
 # game2048forcs32
 Game 2048 by Emily Bronckers, Bronte Brough and Rosa Kooijmans
 
+
 Description
 Our final project computes the famous game 2048. You win the game whenever the tile 2048 is created. However, when there are no white spaces left on the board, you lost the game. The player has the ability to move tiles left, right, up, or down. Whenever two tiles with the same numbers are merged, the added result is put in only one tile. With every move, the game randomly adds either a 2 or 4 (especially 2's) in any of the white spaces. As the game continues, the board therefore becomes fuller with higher numbers, while it takes more tiles to create the next number. That makes it hard to get higher up to 2048 without having a full board in the meantime.
+
 
 Instructions to run it
 The player has 4 options every time: arrow left, right, up, or down. It will keep putting in any of these inputs untill the game is either lost or won. 
 
-Special set up steps
-
 
 Internet and aI 
-In detail, which pieces
-The idea to flip the board 
+
+We could come up with the idea to implement what would happen whenever the player would press the left arrow. A slide to the left would happen and with the help of our other functions, that would merge all of the same tiles and create a new board. However,  
 
 return [list(row) for row in zip(*board)] 
 The zip 
 
-Add to your README.md a description of what your project does and instructions for running your code. If this requires any special set-up steps (e.g., using a local IDE, uploading certain files, installing packages, obtaining a personal API key, etc.), be sure to explain those steps.
-Cite any external contributors (so far) in your README.md. If pieces of your code came from the Internet, such as from a tutorial, give credit with a link to that source. If you used generative AI tools, please describe in detail how you used those tools, and which code pieces, if any, it wrote for you.
-Check your work into your GitHub repository (instructions). Make sure your mentor has access to your repository.
+The game over part 2
+
+After we created all of the functions we wanted to create, we wanted to make sure they worked before implementing them in the right order. This could save a lot of time debugging when implementing the functions, as that would be very hard when the problem would lie in the function itself. Therefore, we asked AI to provide tests to check our functions. We fully copied these tests in our fp status and it helped us to debug our functions and eventually prove they worked. These we could then also show off in the status update.  
+
 
 
 
