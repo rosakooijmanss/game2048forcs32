@@ -1,6 +1,21 @@
 # game2048forcs32
 Game 2048 by Emily Bronckers, Bronte Brough and Rosa Kooijmans
 
+Description
+Our final project computes the famous game 2048. Whenever the tile 2048 is created, the game is won. However, when there are no white spaces left on the board, the game is lost. The player has the ability to move tiles left, right, up, or down. Whenever  
+
+Instructions to run it
+
+Special set up steps
+
+Internet and aI 
+In detail, which pieces
+
+Add to your README.md a description of what your project does and instructions for running your code. If this requires any special set-up steps (e.g., using a local IDE, uploading certain files, installing packages, obtaining a personal API key, etc.), be sure to explain those steps.
+Cite any external contributors (so far) in your README.md. If pieces of your code came from the Internet, such as from a tutorial, give credit with a link to that source. If you used generative AI tools, please describe in detail how you used those tools, and which code pieces, if any, it wrote for you.
+Check your work into your GitHub repository (instructions). Make sure your mentor has access to your repository.
+
+
 
 write 4x4 board like a list of lists:
 board = [
