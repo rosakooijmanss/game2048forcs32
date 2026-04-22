@@ -1,0 +1,207 @@
+import random
+
+# ---------------------------------------------------------------------------
+# Board setup
+# ---------------------------------------------------------------------------
+
+def make_board():
+    """Creates and returns an empty 4x4 board filled with zeros."""
+    board = []
+    for row in range(4):
+        board.append([0, 0, 0, 0])
+    return board
+
+def print_board(board):
+    """Prints the board in a readable grid format."""
+    for row in board:
+        print(row)
+
+# ---------------------------------------------------------------------------
+# Tile placement
+# ---------------------------------------------------------------------------
+
+def get_empty_cells(board):
+    """Returns a list of (row, col) tuples for all empty (0) cells."""
+    empty = []
+    for row in range(len(board)):
+        for col in range(len(board[row])):
+            if board[row][col] == 0:
+                empty.append((row, col))
+    return empty
+
+def place_tile(board):
+    """Places a 2 (or rarely 4) on a random empty cell. Modifies board in place."""
+    empty = get_empty_cells(board)
+    if empty:
+        row, col = random.choice(empty)
+        board[row][col] = 2 if random.random() < 0.9 else 4
+
+# ---------------------------------------------------------------------------
+# Core sliding logic
+# ---------------------------------------------------------------------------
+
+def slide_row_left(row):
+    """
+    Slides all nonzero tiles in a row to the left, then merges adjacent equal tiles.
+    Returns the new row (length 4).
+
+    Example: [0, 2, 2, 4] -> [4, 4, 0, 0]
+    """
+    # Step 1: Remove zeros (compact the row)
+    tiles = [val for val in row if val != 0]
+
+    # Step 2: Merge adjacent equal tiles
+    merged = []
+    i = 0
+    while i < len(tiles):
+        if i + 1 < len(tiles) and tiles[i] == tiles[i + 1]:
+            merged.append(tiles[i] * 2)   # merge the pair
+            i += 2                         # skip both tiles
+        else:
+            merged.append(tiles[i])
+            i += 1
+
+    # Step 3: Pad with zeros on the right to restore length 4
+    while len(merged) < 4:
+        merged.append(0)
+
+    return merged
+
+# ---------------------------------------------------------------------------
+# Sliding in all four directions
+#
+# Strategy: rather than writing four separate merge routines, we transform the
+# board so that every move becomes a "slide left", then transform it back.
+#
+#   Right  -> reverse each row, slide left, reverse back
+#   Up     -> transpose the board, slide left, transpose back
+#   Down   -> transpose, reverse each row, slide left, reverse back, transpose back
+# ---------------------------------------------------------------------------
+
+def reverse_rows(board):
+    """Returns a new board where every row is reversed (left <-> right flip)."""
+    return [row[::-1] for row in board]
+
+def transpose(board):
+    """
+    Returns the transpose of the board (rows become columns and vice versa).
+    Used to reuse slide_row_left for up/down moves.
+    """
+    return [list(row) for row in zip(*board)]
+
+def slide_left(board):
+    """Slides all tiles on the board to the left. Returns a new board."""
+    return [slide_row_left(row) for row in board]
+
+def slide_right(board):
+    """Slides all tiles to the right. Returns a new board."""
+    reversed_board = reverse_rows(board)
+    slid = slide_left(reversed_board)
+    return reverse_rows(slid)
+
+def slide_up(board):
+    """Slides all tiles upward. Returns a new board."""
+    transposed = transpose(board)
+    slid = slide_left(transposed)
+    return transpose(slid)
+
+def slide_down(board):
+    """Slides all tiles downward. Returns a new board."""
+    transposed = transpose(board)
+    slid = slide_right(transposed)   # slide right on transposed = slide down
+    return transpose(slid)
+
+# ---------------------------------------------------------------------------
+# Game state checks
+# ---------------------------------------------------------------------------
+
+def check_win(board):
+    """
+    Returns True if any cell on the board contains 2048.
+    The player wins as soon as this tile appears.
+    """
+    for row in board:
+        for cell in row:
+            if cell == 2048:
+                return True
+    return False
+
+def check_game_over(board):
+    """
+    Returns True if no moves are possible (the game is lost).
+
+    The game is over when:
+      1. There are no empty cells left, AND
+      2. No two adjacent tiles (horizontally or vertically) are equal.
+    If either condition fails, at least one move still exists.
+    """
+    # If any cell is empty, the game is not over
+    if get_empty_cells(board):
+        return False
+
+    # Check every cell for a mergeable neighbor to the right or below
+    for row in range(4):
+        for col in range(4):
+            # Check right neighbor
+            if col + 1 < 4 and board[row][col] == board[row][col + 1]:
+                return False
+            # Check bottom neighbor
+            if row + 1 < 4 and board[row][col] == board[row + 1][col]:
+                return False
+
+    # No empty cells and no merges available — game over
+    return True
+
+# ---------------------------------------------------------------------------
+# Quick tests
+# ---------------------------------------------------------------------------
+
+if __name__ == "__main__":
+    # --- slide_row_left ---
+    print("=== slide_row_left ===")
+    print(slide_row_left([0, 2, 2, 4]))   # [4, 4, 0, 0]
+    print(slide_row_left([2, 2, 2, 2]))   # [4, 4, 0, 0]
+    print(slide_row_left([0, 0, 0, 2]))   # [2, 0, 0, 0]
+    print(slide_row_left([4, 0, 4, 4]))   # [8, 4, 0, 0]
+
+    # --- slide directions ---
+    print("\n=== slide directions ===")
+    test_board = [
+        [0, 0, 2, 2],
+        [4, 0, 0, 4],
+        [0, 8, 8, 0],
+        [2, 2, 2, 2],
+    ]
+    print("Original:")
+    print_board(test_board)
+
+    print("\nSlide left:")
+    print_board(slide_left(test_board))   # [[4,0,0,0],[8,0,0,0],[16,0,0,0],[4,4,0,0]]
+
+    print("\nSlide right:")
+    print_board(slide_right(test_board))  # [[0,0,0,4],[0,0,0,8],[0,0,0,16],[0,0,4,4]]
+
+    print("\nSlide up:")
+    print_board(slide_up(test_board))     # cols compact upward
+
+    print("\nSlide down:")
+    print_board(slide_down(test_board))   # cols compact downward
+
+    # --- check_win ---
+    print("\n=== check_win ===")
+    winning_board = make_board()
+    winning_board[0][0] = 2048
+    print("Has 2048:", check_win(winning_board))    # True
+    print("No 2048: ", check_win(test_board))        # False
+
+    # --- check_game_over ---
+    print("\n=== check_game_over ===")
+    # A full board with no adjacent equal tiles = game over
+    stuck_board = [
+        [2,  4,  2,  4],
+        [4,  2,  4,  2],
+        [2,  4,  2,  4],
+        [4,  2,  4,  2],
+    ]
+    print("Stuck board game over:", check_game_over(stuck_board))   # True
+    print("Normal board game over:", check_game_over(test_board))   # False (has empty cells)
