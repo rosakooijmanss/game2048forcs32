@@ -130,25 +130,18 @@ def check_game_over(board):
     return True
 
 
-# ---------------------------------------------------------------------------
-# Score tracking
-# ---------------------------------------------------------------------------
-
+#tracking the score of the game 
 def get_score(board):
-    """Adds up all tile values on the board as the current score."""
+    #Adds up all tile values on the board as the current score
     total = 0
     for row in board:
         for cell in row:
             total += cell
     return total
 
-
-# ---------------------------------------------------------------------------
-# Display
-# ---------------------------------------------------------------------------
-
+# display layout 
 def display(board, score):
-    """Prints a clean board with the current score above it."""
+    #Prints a clean board with the current score above it
     print("\n" + "=" * 25)
     print(f"  SCORE: {score}")
     print("=" * 25)
@@ -160,40 +153,36 @@ def display(board, score):
     print("  a = left  d = right")
     print("  q = quit")
 
-
-# ---------------------------------------------------------------------------
-# Main game loop
-# ---------------------------------------------------------------------------
-
+#the main game loop
 def play():
-    """Runs the main game loop: input -> move -> place tile -> check state."""
+    #Runs the main game loop: input -> move -> place tile -> check state
     board = make_board()
 
-    # Place two tiles at the start so the board isn't completely empty
+    #Place two tiles at the start so the board isn't completely empty
     place_tile(board)
     place_tile(board)
 
     while True:
         display(board, get_score(board))
 
-        # Check win before asking for input so the winning board is visible
+        #Check win before asking for input so the winning board is visible
         if check_win(board):
-            print("\n🎉 You reached 2048! You win!")
+            print("You reached 2048! You win!")
             break
 
-        # Check game over before asking for input
+        #check if the game is over before asking for input
         if check_game_over(board):
-            print("\n😞 No moves left. Game over!")
+            print("No moves left. Game over!")
             break
 
-        # Get input from the player
+        #get the input move from the player
         move = input("\nYour move: ").strip().lower()
 
         if move == "q":
             print("Thanks for playing!")
             break
 
-        # Map the key to the correct slide function
+        #map the key to the correct slide function
         if move == "a":
             new_board = slide_left(board)
         elif move == "d":
@@ -203,11 +192,11 @@ def play():
         elif move == "s":
             new_board = slide_down(board)
         else:
-            # If the input isn't recognized, ask again without wasting a turn
+            #if the input isn't recognized, ask again without wasting a turn
             print("Invalid input. Use w/a/s/d to move or q to quit.")
             continue
 
-        # Only place a new tile if the board actually changed (i.e. the move did something)
+        #only place a new tile if the board actually changed (i.e. the move did something)
         if new_board != board:
             board = new_board
             place_tile(board)
@@ -215,9 +204,6 @@ def play():
             print("That move didn't change the board. Try a different direction.")
 
 
-# ---------------------------------------------------------------------------
-# Entry point
-# ---------------------------------------------------------------------------
-
+#call the function
 if __name__ == "__main__":
     play()
