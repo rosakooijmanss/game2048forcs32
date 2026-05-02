@@ -3,15 +3,39 @@ Game 2048 by Emily Bronckers, Bronte Brough and Rosa Kooijmans
 
 
 
-Description
+This project is our own implementation of the classic game 2048, built completely from scratch in Python.
 
-Our final project computes the famous game 2048. You win the game whenever the tile 2048 is created. However, when there are no white spaces left on the board, you lost the game. The player has the ability to move tiles left, right, up, or down. Whenever two tiles with the same numbers are merged, the added result is put in only one tile. With every move, the game randomly adds either a 2 or 4 (especially 2's) in any of the white spaces. As the game continues, the board therefore becomes fuller with higher numbers, while it takes more tiles to create the next number. That makes it hard to get higher up to 2048 without having a full board in the meantime.
+The goal is simple:
+- Combine tiles
+- Reach 2048
+- Don't fill up the board before you get there
+
+Every move shifts all tiles in one direction, merges equal numbers, and then randomly spawns a new tile (usually a 2 and sometimes a 4).
 
 
+HOW THE GAME WORKS
+- You play on a 4x4 grid
+- Each move:
+  - Slides all tiles in that direction
+  - Merges tiles with the same value
+- After every move:
+  - A new tile (2 or 4) appears in a random empty cell
+- You win when you reach 2048
+- You lose when
+  - The board is full and
+  - No more merges are possible
 
-Instructions to run it
 
-The player has 4 options every time: arrow left, right, up, or down. It will keep putting in any of these inputs untill the game is either lost or won. 
+HOW TO PLAY 
+Run the program and use your keyboard:
+- A = move left
+- D = move right
+- W = move up
+- S = move down
+
+The game continues until you either:
+- Win (reach 2048)
+- Lose (no moves left)
 
 
 
@@ -27,6 +51,10 @@ The next step in implementing what happens when one of the arrows is pressed, is
 After we created all of the functions we wanted to create, we wanted to make sure they worked before implementing them in the right order. This could save a lot of time debugging when implementing the functions, as that would be very hard when the problem would lie in the function itself. Therefore, we asked AI to provide tests to check our functions. We fully copied these tests in our fp status and it helped us to debug our functions and eventually prove they worked. These we could then also show off in the status update.  
 
 At first, we did not realise that there is a possibility that you did not lose, even when the board is full. We implemented only that condition. However, when there are two tiles with the same number next to eachother, you can still do a move without losing. We realised this when we used the tests. Then we asked ClaudeAI to help us implement that second condition, which is checking whether every cell had a mergeable neighbor. AI helped to find out we had to loop through all the tiles and only check for a mergeable neighbor to the right or below it. 
+
+
+DISPLAY 
+refined and enhanced
 
 
 
