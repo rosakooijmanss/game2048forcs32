@@ -5,12 +5,14 @@ Game 2048 by Emily Bronckers, Bronte Brough and Rosa Kooijmans
 
 This project is our own implementation of the classic game 2048, built completely from scratch in Python.
 
+
 The goal is simple:
 - Combine tiles
 - Reach 2048
 - Don't fill up the board before you get there
 
 Every move shifts all tiles in one direction, merges equal numbers, and then randomly spawns a new tile (usually a 2 and sometimes a 4).
+
 
 
 HOW THE GAME WORKS
@@ -26,7 +28,9 @@ HOW THE GAME WORKS
   - No more merges are possible
 
 
+
 HOW TO PLAY 
+
 Run the program and use your keyboard:
 - A = move left
 - D = move right
@@ -36,6 +40,8 @@ Run the program and use your keyboard:
 The game continues until you either:
 - Win (reach 2048)
 - Lose (no moves left)
+
+
 
 
 
