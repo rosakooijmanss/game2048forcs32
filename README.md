@@ -45,7 +45,7 @@ The game continues until you either:
 
 
 
-Internet and AI
+INTERNET AND AI
 
 We could come up with the idea to implement what would happen whenever the player would press the left arrow. A slide to the left would happen and with the help of our other functions, that would merge all of the same tiles and create a new board. However, it would become very long if we had to write this for all of the other three moves. We thought there would be a possibility of doing this smarter, so we asked ClaudeAI. It came up with the idea to still use the left slide option, but turn the board on every move. This would need a lot less code, so we used this idea. 
 
