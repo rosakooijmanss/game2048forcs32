@@ -1,0 +1,267 @@
+import random
+import tkinter as tk
+from tkinter import messagebox
+
+# ---------------------------------------------------------------------------
+# Board logic (unchanged from fp_final.py)
+# ---------------------------------------------------------------------------
+
+def make_board():
+    board = []
+    for row in range(4):
+        board.append([0, 0, 0, 0])
+    return board
+
+def get_empty_cells(board):
+    empty = []
+    for row in range(len(board)):
+        for col in range(len(board[row])):
+            if board[row][col] == 0:
+                empty.append((row, col))
+    return empty
+
+def place_tile(board):
+    empty = get_empty_cells(board)
+    if empty:
+        row, col = random.choice(empty)
+        board[row][col] = 2 if random.random() < 0.9 else 4
+
+def slide_row_left(row):
+    tiles = [val for val in row if val != 0]
+    merged = []
+    i = 0
+    while i < len(tiles):
+        if i + 1 < len(tiles) and tiles[i] == tiles[i + 1]:
+            merged.append(tiles[i] * 2)
+            i += 2
+        else:
+            merged.append(tiles[i])
+            i += 1
+    while len(merged) < 4:
+        merged.append(0)
+    return merged
+
+def reverse_rows(board):
+    return [row[::-1] for row in board]
+
+def transpose(board):
+    return [list(row) for row in zip(*board)]
+
+def slide_left(board):
+    return [slide_row_left(row) for row in board]
+
+def slide_right(board):
+    return reverse_rows(slide_left(reverse_rows(board)))
+
+def slide_up(board):
+    return transpose(slide_left(transpose(board)))
+
+def slide_down(board):
+    return transpose(slide_right(transpose(board)))
+
+def check_win(board):
+    for row in board:
+        for cell in row:
+            if cell == 2048:
+                return True
+    return False
+
+def check_game_over(board):
+    if get_empty_cells(board):
+        return False
+    for row in range(4):
+        for col in range(4):
+            if col + 1 < 4 and board[row][col] == board[row][col + 1]:
+                return False
+            if row + 1 < 4 and board[row][col] == board[row + 1][col]:
+                return False
+    return True
+
+def get_score(board):
+    total = 0
+    for row in board:
+        for cell in row:
+            total += cell
+    return total
+
+
+# ---------------------------------------------------------------------------
+# Tile colors — each value gets its own background and text color
+# ---------------------------------------------------------------------------
+
+TILE_COLORS = {
+    0:    ("#cdc1b4", "#cdc1b4"),   # empty cell (bg, text both hidden)
+    2:    ("#eee4da", "#776e65"),
+    4:    ("#ede0c8", "#776e65"),
+    8:    ("#f2b179", "#f9f6f2"),
+    16:   ("#f59563", "#f9f6f2"),
+    32:   ("#f67c5f", "#f9f6f2"),
+    64:   ("#f65e3b", "#f9f6f2"),
+    128:  ("#edcf72", "#f9f6f2"),
+    256:  ("#edcc61", "#f9f6f2"),
+    512:  ("#edc850", "#f9f6f2"),
+    1024: ("#edc53f", "#f9f6f2"),
+    2048: ("#edc22e", "#f9f6f2"),
+}
+
+def get_tile_colors(val):
+    """Returns (bg_color, text_color) for a given tile value."""
+    if val in TILE_COLORS:
+        return TILE_COLORS[val]
+    # For any tile above 2048 use a gold color
+    return ("#3c3a32", "#f9f6f2")
+
+
+# ---------------------------------------------------------------------------
+# GUI class
+# ---------------------------------------------------------------------------
+
+class Game2048:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("2048")
+        self.root.resizable(False, False)
+        self.root.configure(bg="#faf8ef")
+
+        self.board = make_board()
+        self.score = 0
+        self.game_over_shown = False
+
+        self._build_ui()
+        self._start_game()
+
+        # Bind arrow keys and wasd
+        self.root.bind("<Key>", self._handle_key)
+
+    def _build_ui(self):
+        """Creates all the widgets — header, score, grid, and new game button."""
+
+        # --- Header ---
+        header = tk.Frame(self.root, bg="#faf8ef")
+        header.pack(padx=20, pady=(20, 0), fill="x")
+
+        tk.Label(
+            header, text="2048", font=("Georgia", 48, "bold"),
+            bg="#faf8ef", fg="#776e65"
+        ).pack(side="left")
+
+        # Score box on the right side of the header
+        score_frame = tk.Frame(header, bg="#bbada0", padx=16, pady=8)
+        score_frame.pack(side="right", padx=(0, 0))
+
+        tk.Label(
+            score_frame, text="SCORE", font=("Georgia", 10, "bold"),
+            bg="#bbada0", fg="#eee4da"
+        ).pack()
+
+        self.score_label = tk.Label(
+            score_frame, text="0", font=("Georgia", 18, "bold"),
+            bg="#bbada0", fg="white"
+        )
+        self.score_label.pack()
+
+        # --- Subtitle / instructions ---
+        tk.Label(
+            self.root,
+            text="Use arrow keys or W A S D to play",
+            font=("Georgia", 11), bg="#faf8ef", fg="#776e65"
+        ).pack(pady=(6, 0))
+
+        # --- Grid board ---
+        board_frame = tk.Frame(self.root, bg="#bbada0", padx=10, pady=10)
+        board_frame.pack(padx=20, pady=14)
+
+        # Create a 4x4 grid of Labels — we'll update their text and color each move
+        self.cells = []
+        for r in range(4):
+            row_cells = []
+            for c in range(4):
+                cell = tk.Label(
+                    board_frame,
+                    text="",
+                    width=4,
+                    font=("Georgia", 24, "bold"),
+                    relief="flat",
+                    bg="#cdc1b4",
+                    fg="#776e65"
+                )
+                # padx/pady creates the gap between tiles (the "grid lines")
+                cell.grid(row=r, column=c, padx=6, pady=6, ipadx=14, ipady=14)
+                row_cells.append(cell)
+            self.cells.append(row_cells)
+
+        # --- New Game button ---
+        tk.Button(
+            self.root,
+            text="New Game",
+            font=("Georgia", 13, "bold"),
+            bg="#8f7a66", fg="white",
+            activebackground="#9f8b77",
+            relief="flat",
+            padx=16, pady=8,
+            command=self._start_game
+        ).pack(pady=(0, 20))
+
+    def _start_game(self):
+        """Resets everything and starts fresh."""
+        self.board = make_board()
+        self.score = 0
+        self.game_over_shown = False
+        place_tile(self.board)
+        place_tile(self.board)
+        self._refresh()
+
+    def _refresh(self):
+        """Redraws every tile on the grid and updates the score label."""
+        for r in range(4):
+            for c in range(4):
+                val = self.board[r][c]
+                bg, fg = get_tile_colors(val)
+                text = str(val) if val != 0 else ""
+                self.cells[r][c].config(text=text, bg=bg, fg=fg)
+
+        self.score_label.config(text=str(get_score(self.board)))
+
+    def _handle_key(self, event):
+        """Maps a keypress to a slide direction and processes the move."""
+        if self.game_over_shown:
+            return
+
+        key = event.keysym.lower()
+
+        if key in ("left", "a"):
+            new_board = slide_left(self.board)
+        elif key in ("right", "d"):
+            new_board = slide_right(self.board)
+        elif key in ("up", "w"):
+            new_board = slide_up(self.board)
+        elif key in ("down", "s"):
+            new_board = slide_down(self.board)
+        else:
+            return  # ignore any other keys
+
+        # Only update if the move actually changed something
+        if new_board != self.board:
+            self.board = new_board
+            place_tile(self.board)
+            self._refresh()
+            self._check_state()
+
+    def _check_state(self):
+        """Checks for a win or game over after each move."""
+        if check_win(self.board):
+            self.game_over_shown = True
+            messagebox.showinfo("You Win! 🎉", "You reached 2048! Congratulations!")
+        elif check_game_over(self.board):
+            self.game_over_shown = True
+            messagebox.showinfo("Game Over 😞", f"No moves left!\nFinal score: {get_score(self.board)}")
+
+
+# ---------------------------------------------------------------------------
+# Entry point
+# ---------------------------------------------------------------------------
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    Game2048(root)
+    root.mainloop()
