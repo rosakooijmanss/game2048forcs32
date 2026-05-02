@@ -156,6 +156,7 @@ def display(board, score):
 #the main game loop
 def play():
     #Runs the main game loop: input to move to place tile to check state
+    print("\nWelcome to 2048!")
     board = make_board()
 
     #Place two tiles at the start so the board isn't completely empty
